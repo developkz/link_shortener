@@ -1,4 +1,3 @@
-
 import requests
 from urllib.parse import urlparse
 from dotenv import load_dotenv
@@ -7,13 +6,12 @@ import os
 
 
 def is_bitlink(url: str) -> str:
-    '''the function returns the number of clicks on the bitlink. 
+    '''the function returns the number of clicks on the bitlink.
     If there is no such bitlink, the bitlink will be returned.'''
     if urlparse(url)[1] == 'bit.ly' or urlparse(url)[1] == 'www.bit.ly':
         return f'Количество кликов: {get_click_count(BITLINK_TOKEN, url)}'
     else:
         return f'Битлинк создан: {get_shorten_link(BITLINK_TOKEN, url)}'
-        
 
 
 def get_click_count(token: str, url: str) -> int:
@@ -40,10 +38,13 @@ def get_shorten_link(token: str, url: str) -> str:
     }
     data = {'long_url': url}
 
-    bitly_response = requests.post('https://api-ssl.bitly.com/v4/bitlinks', headers=headers, json=data)
+    bitly_response = requests.post(
+        'https://api-ssl.bitly.com/v4/bitlinks',
+        headers=headers,
+        json=data
+        )
     bitly_response.raise_for_status()
     return bitly_response.json()['link']
-
 
 
 if __name__ == '__main__':
@@ -51,6 +52,5 @@ if __name__ == '__main__':
     env_path = Path('.') / '.env'
     load_dotenv(dotenv_path=env_path)
     BITLINK_TOKEN = os.getenv('BITLINK_TOKEN')
-    
-    print(is_bitlink(url='https://google.com'))
 
+    print(is_bitlink(url='https://google.com'))
