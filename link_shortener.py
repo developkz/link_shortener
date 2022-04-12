@@ -1,6 +1,5 @@
 import requests
 from urllib.parse import urlparse
-from dotenv import load_dotenv
 from pathlib import Path
 import os
 
@@ -50,7 +49,6 @@ def get_shorten_link(token: str, url: str) -> str:
 if __name__ == '__main__':
 
     env_path = Path('.') / '.env'
-    load_dotenv(dotenv_path=env_path)
     BITLINK_TOKEN = os.getenv('BITLINK_TOKEN')
 
     print(is_bitlink(url=input(f'Paste bitlink/url here: ').strip()))
