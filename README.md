@@ -16,10 +16,16 @@ Replase `<Your bitlink token>`to your Bitlink token.
 Should be something similar to:
 ```BITLINK_TOKEN=Bearer 23123hoy48124ydqs7dglqs7dgbdoqbwd78```
 
+Create environment inside project folder, run command:
+
+```sh
+python3 -m venv env
+```
+
 To activate environment run command:
 
 ```sh
-source link_shortener_venv/bin/activate
+source env/bin/activate
 ```
 
 ## Documentation
