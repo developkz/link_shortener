@@ -1,7 +1,9 @@
-import requests
-from urllib.parse import urlparse
-from pathlib import Path
 import os
+
+from pathlib import Path
+from urllib.parse import urlparse
+
+import requests
 
 
 def is_bitlink(url: str) -> str:
@@ -52,5 +54,3 @@ if __name__ == '__main__':
     BITLINK_TOKEN = os.getenv('BITLINK_TOKEN')
 
     print(is_bitlink(url=input(f'Paste bitlink/url here: ').strip()))
-
-
