@@ -9,9 +9,9 @@ def is_bitlink(url: str) -> str:
     '''the function returns the number of clicks on the bitlink.
     If there is no such bitlink, the bitlink will be returned.'''
     if urlparse(url)[1] == 'bit.ly' or urlparse(url)[1] == 'www.bit.ly':
-        return f'Количество кликов: {get_click_count(BITLINK_TOKEN, url)}'
+        return f'Clicks count: {get_click_count(BITLINK_TOKEN, url)}'
     else:
-        return f'Битлинк создан: {get_shorten_link(BITLINK_TOKEN, url)}'
+        return f'Bitlink created: {get_shorten_link(BITLINK_TOKEN, url)}'
 
 
 def get_click_count(token: str, url: str) -> int:
@@ -53,4 +53,6 @@ if __name__ == '__main__':
     load_dotenv(dotenv_path=env_path)
     BITLINK_TOKEN = os.getenv('BITLINK_TOKEN')
 
-    print(is_bitlink(url='https://google.com'))
+    print(is_bitlink(url=input(f'Paste bitlink/url here: ').strip()))
+
+
