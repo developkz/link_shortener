@@ -6,13 +6,23 @@ from urllib.parse import urlparse
 import requests
 
 
-def is_bitlink(url: str) -> str:
-    '''the function returns the number of clicks on the bitlink.
+def check_url(url: str) -> str:
+    '''The function returns the number of clicks on the bitlink.
     If there is no such bitlink, the bitlink will be returned.'''
-    if urlparse(url)[1] == 'bit.ly' or urlparse(url)[1] == 'www.bit.ly':
-        return f'Clicks count: {get_click_count(BITLINK_TOKEN, url)}'
+
+    headers = {
+        'Authorization': bitlink_token,
+    }
+
+    api_link = 'https://api-ssl.bitly.com/v4/bitlinks/{}'
+    request_link = api_link.format(urlparse(url).netloc + urlparse(url).path)
+    bitly_response = requests.get(request_link, headers=headers)
+
+
+    if bitly_response.ok:
+        return f'Clicks count: {get_click_count(bitlink_token, url)}'
     else:
-        return f'Bitlink created: {get_shorten_link(BITLINK_TOKEN, url)}'
+        return f'Bitlink created: {get_shorten_link(bitlink_token, url)}'
 
 
 def get_click_count(token: str, url: str) -> int:
@@ -20,11 +30,10 @@ def get_click_count(token: str, url: str) -> int:
 
     headers = {
         'Authorization': token,
-        'Content-Type': 'application/json'
     }
 
     api_link = 'https://api-ssl.bitly.com/v4/bitlinks/{}/clicks/summary'
-    request_link = api_link.format(urlparse(url)[1] + urlparse(url)[2])
+    request_link = api_link.format(urlparse(url).netloc + urlparse(url).path)
     bitly_response = requests.get(request_link, headers=headers)
     bitly_response.raise_for_status()
     return bitly_response.json()['total_clicks']
@@ -35,22 +44,23 @@ def get_shorten_link(token: str, url: str) -> str:
 
     headers = {
         'Authorization': token,
-        'Content-Type': 'application/json'
     }
     data = {'long_url': url}
-
-    bitly_response = requests.post(
-        'https://api-ssl.bitly.com/v4/bitlinks',
-        headers=headers,
-        json=data
-        )
-    bitly_response.raise_for_status()
-    return bitly_response.json()['link']
+    try:
+        bitly_response = requests.post(
+            'https://api-ssl.bitly.com/v4/bitlinks',
+            headers=headers,
+            json=data
+            )
+        bitly_response.raise_for_status()
+        return bitly_response.json()['link']
+    except requests.exceptions.HTTPError:
+        pass
 
 
 if __name__ == '__main__':
 
     env_path = Path('.') / '.env'
-    BITLINK_TOKEN = os.getenv('BITLINK_TOKEN')
+    bitlink_token = os.getenv('BITLINK_TOKEN')
 
-    print(is_bitlink(url=input(f'Paste bitlink/url here: ').strip()))
+    print(check_url(url=input(f'Paste bitlink/url here: ').strip()))
