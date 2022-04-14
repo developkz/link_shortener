@@ -11,7 +11,7 @@ def check_url(url: str) -> str:
     If there is no such bitlink, the bitlink will be returned.'''
 
     headers = {
-        'Authorization': bitlink_token,
+        'Authorization': f'Bearer {bitlink_token}',
     }
 
     api_link = 'https://api-ssl.bitly.com/v4/bitlinks/{}'
@@ -29,7 +29,7 @@ def get_click_count(token: str, url: str) -> int:
     '''Function returns click count all time for bitlink'''
 
     headers = {
-        'Authorization': token,
+        'Authorization': f'Bearer {token}',
     }
 
     api_link = 'https://api-ssl.bitly.com/v4/bitlinks/{}/clicks/summary'
@@ -43,7 +43,7 @@ def get_shorten_link(token: str, url: str) -> str:
     '''Function returns shortern link'''
 
     headers = {
-        'Authorization': token,
+        'Authorization': f'Bearer {token}',
     }
     data = {'long_url': url}
     try:

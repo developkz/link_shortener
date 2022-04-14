@@ -14,7 +14,7 @@ Rename `.env.sample` in to `.env`.
 Replase `<Your bitlink token>`to your Bitlink token.
 
 Should be something similar to:
-```BITLINK_TOKEN=Bearer 23123hoy48124ydqs7dglqs7dgbdoqbwd78```
+```BITLINK_TOKEN=23123hoy48124ydqs7dglqs7dgbdoqbwd78```
 
 Create environment inside project folder, run command:
 
