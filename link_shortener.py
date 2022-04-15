@@ -1,4 +1,6 @@
 import os
+import urllib.request
+import urllib.error
 
 from pathlib import Path
 from urllib.parse import urlparse
@@ -7,6 +9,11 @@ import requests
 
 from dotenv import load_dotenv
 
+def check_url_accessibility(url:str) -> bool:
+    if urllib.request.urlopen(url).getcode() == 200:
+        return True
+    else:
+        return False
 
 def is_bitlink(token: str, url: str) -> str:
     '''The function returns the number of clicks on the bitlink.
@@ -65,9 +72,13 @@ if __name__ == '__main__':
 
     user_input = input(f'Paste bitlink/url here: ').strip()
     try:
-        if is_bitlink(token=bitlink_token, url=user_input):
-            print(f'Clicks Count: {get_click_count(token=bitlink_token, url=user_input)}')
-        else:
-            print(f'Shorten Link: {get_shorten_link(token=bitlink_token, url=user_input)}')
-    except requests.exceptions.HTTPError:
-        raise requests.exceptions.HTTPError('Link is invalid. Link format is https://google.com')
+        if check_url_accessibility(url=user_input):
+            try:
+                if is_bitlink(token=bitlink_token, url=user_input):
+                    print(f'Clicks Count: {get_click_count(token=bitlink_token, url=user_input)}')
+                else:
+                    print(f'Shorten Link: {get_shorten_link(token=bitlink_token, url=user_input)}')
+            except:
+                raise requests.exceptions.HTTPError('Link is invalid. Link format is https://google.com')
+    except:
+        raise urllib.error.URLError('Website is down')
