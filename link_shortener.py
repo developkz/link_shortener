@@ -5,13 +5,15 @@ from urllib.parse import urlparse
 
 import requests
 
+from dotenv import load_dotenv
 
-def check_url(url: str) -> str:
+
+def is_bitlink(token: str, url: str) -> str:
     '''The function returns the number of clicks on the bitlink.
     If there is no such bitlink, the bitlink will be returned.'''
 
     headers = {
-        'Authorization': f'Bearer {bitlink_token}',
+        'Authorization': f'Bearer {token}',
     }
 
     api_link = 'https://api-ssl.bitly.com/v4/bitlinks/{}'
@@ -20,9 +22,9 @@ def check_url(url: str) -> str:
 
 
     if bitly_response.ok:
-        return f'Clicks count: {get_click_count(bitlink_token, url)}'
+        return True
     else:
-        return f'Bitlink created: {get_shorten_link(bitlink_token, url)}'
+        return
 
 
 def get_click_count(token: str, url: str) -> int:
@@ -46,21 +48,26 @@ def get_shorten_link(token: str, url: str) -> str:
         'Authorization': f'Bearer {token}',
     }
     data = {'long_url': url}
-    try:
-        bitly_response = requests.post(
+    bitly_response = requests.post(
             'https://api-ssl.bitly.com/v4/bitlinks',
             headers=headers,
             json=data
-            )
-        bitly_response.raise_for_status()
-        return bitly_response.json()['link']
-    except requests.exceptions.HTTPError:
-        pass
+    )
+    bitly_response.raise_for_status()
+    return bitly_response.json()['link']
 
 
 if __name__ == '__main__':
 
     env_path = Path('.') / '.env'
+    load_dotenv(env_path)
     bitlink_token = os.getenv('BITLINK_TOKEN')
 
-    print(check_url(url=input(f'Paste bitlink/url here: ').strip()))
+    user_input = input(f'Paste bitlink/url here: ').strip()
+    try:
+        if is_bitlink(token=bitlink_token, url=user_input):
+            print(f'Clicks Count: {get_click_count(token=bitlink_token, url=user_input)}')
+        else:
+            print(f'Shorten Link: {get_shorten_link(token=bitlink_token, url=user_input)}')
+    except requests.exceptions.HTTPError:
+        raise requests.exceptions.HTTPError('Link is invalid. Link format is https://google.com')
