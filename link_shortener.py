@@ -9,11 +9,13 @@ import requests
 
 from dotenv import load_dotenv
 
-def check_url_accessibility(url:str) -> bool:
+
+def check_url_accessibility(url: str) -> bool:
     if urllib.request.urlopen(url).getcode() == 200:
         return True
     else:
-        return False
+        return
+
 
 def is_bitlink(token: str, url: str) -> str:
     '''The function returns the number of clicks on the bitlink.
@@ -26,8 +28,6 @@ def is_bitlink(token: str, url: str) -> str:
     api_link = 'https://api-ssl.bitly.com/v4/bitlinks/{}'
     request_link = api_link.format(urlparse(url).netloc + urlparse(url).path)
     bitly_response = requests.get(request_link, headers=headers)
-
-
     if bitly_response.ok:
         return True
     else:
