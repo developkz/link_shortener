@@ -19,10 +19,7 @@ def is_bitlink(token: str, url: str) -> str:
     '''The function returns the number of clicks on the bitlink.
     If there is no such bitlink, the bitlink will be returned.'''
 
-    headers = {
-        'Authorization': f'Bearer {token}',
-    }
-
+    headers = authorisation_header
     api_link = 'https://api-ssl.bitly.com/v4/bitlinks/{}'
     request_link = api_link.format(urlparse(url).netloc + urlparse(url).path)
     bitly_response = requests.get(request_link, headers=headers)
@@ -32,10 +29,7 @@ def is_bitlink(token: str, url: str) -> str:
 def get_click_count(token: str, url: str) -> int:
     '''Function returns click count all time for bitlink'''
 
-    headers = {
-        'Authorization': f'Bearer {token}',
-    }
-
+    headers = authorisation_header
     api_link = 'https://api-ssl.bitly.com/v4/bitlinks/{}/clicks/summary'
     request_link = api_link.format(urlparse(url).netloc + urlparse(url).path)
     bitly_response = requests.get(request_link, headers=headers)
@@ -46,9 +40,7 @@ def get_click_count(token: str, url: str) -> int:
 def get_shorten_link(token: str, url: str) -> str:
     '''Function returns shortern link'''
 
-    headers = {
-        'Authorization': f'Bearer {token}',
-    }
+    headers = authorisation_header
     data = {'long_url': url}
     bitly_response = requests.post(
             'https://api-ssl.bitly.com/v4/bitlinks',
@@ -66,6 +58,7 @@ if __name__ == '__main__':
     bitlink_token = os.getenv('BITLINK_TOKEN')
 
     user_input = input(f'Paste bitlink/url here: ').strip()
+    authorisation_header = {'Authorization': f'Bearer {bitlink_token}'}
     try:
         if check_url_accessibility(url=user_input):
             try:
