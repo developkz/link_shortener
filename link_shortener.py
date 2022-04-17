@@ -1,6 +1,4 @@
 import os
-import urllib.request
-import urllib.error
 
 from pathlib import Path
 from urllib.parse import urlparse
@@ -11,7 +9,7 @@ from dotenv import load_dotenv
 
 
 def check_url_accessibility(url: str) -> bool:
-    if urllib.request.urlopen(url).getcode() == 200:
+    if requests.get(url).ok:
         return True
     else:
         return
@@ -28,10 +26,7 @@ def is_bitlink(token: str, url: str) -> str:
     api_link = 'https://api-ssl.bitly.com/v4/bitlinks/{}'
     request_link = api_link.format(urlparse(url).netloc + urlparse(url).path)
     bitly_response = requests.get(request_link, headers=headers)
-    if bitly_response.ok:
-        return True
-    else:
-        return
+    return bitly_response.ok
 
 
 def get_click_count(token: str, url: str) -> int:
@@ -81,4 +76,4 @@ if __name__ == '__main__':
             except:
                 raise requests.exceptions.HTTPError('Link is invalid. Link format is https://google.com')
     except:
-        raise urllib.error.URLError('Website is down')
+        raise requests.exceptions.ConnectionError('Website is down')
