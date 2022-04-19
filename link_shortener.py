@@ -9,30 +9,28 @@ from dotenv import load_dotenv
 
 
 def check_url_accessibility(url: str) -> bool:
-    if requests.get(url).ok:
+    '''Function checks url for avaliblity'''
+    if requests.get(url).raise_for_status:
         return True
-    else:
-        return
+
 
 
 def is_bitlink(token: str, url: str) -> str:
     '''The function returns the number of clicks on the bitlink.
     If there is no such bitlink, the bitlink will be returned.'''
 
-    headers = authorisation_header
     api_link = 'https://api-ssl.bitly.com/v4/bitlinks/{}'
     request_link = api_link.format(urlparse(url).netloc + urlparse(url).path)
-    bitly_response = requests.get(request_link, headers=headers)
+    bitly_response = requests.get(request_link, headers=token)
     return bitly_response.ok
 
 
 def get_click_count(token: str, url: str) -> int:
     '''Function returns click count all time for bitlink'''
 
-    headers = authorisation_header
     api_link = 'https://api-ssl.bitly.com/v4/bitlinks/{}/clicks/summary'
     request_link = api_link.format(urlparse(url).netloc + urlparse(url).path)
-    bitly_response = requests.get(request_link, headers=headers)
+    bitly_response = requests.get(request_link, headers=token)
     bitly_response.raise_for_status()
     return bitly_response.json()['total_clicks']
 
@@ -40,11 +38,10 @@ def get_click_count(token: str, url: str) -> int:
 def get_shorten_link(token: str, url: str) -> str:
     '''Function returns shortern link'''
 
-    headers = authorisation_header
     data = {'long_url': url}
     bitly_response = requests.post(
             'https://api-ssl.bitly.com/v4/bitlinks',
-            headers=headers,
+            headers=token,
             json=data
     )
     bitly_response.raise_for_status()
@@ -58,15 +55,14 @@ if __name__ == '__main__':
     bitlink_token = os.getenv('BITLINK_TOKEN')
 
     user_input = input(f'Paste bitlink/url here: ').strip()
-    authorisation_header = {'Authorization': f'Bearer {bitlink_token}'}
+    authorization_header = {'Authorization': f'Bearer {bitlink_token}'}
     try:
-        if check_url_accessibility(url=user_input):
-            try:
-                if is_bitlink(token=bitlink_token, url=user_input):
-                    print(f'Clicks Count: {get_click_count(token=bitlink_token, url=user_input)}')
-                else:
-                    print(f'Shorten Link: {get_shorten_link(token=bitlink_token, url=user_input)}')
-            except:
-                raise requests.exceptions.HTTPError('Link is invalid. Link format is https://google.com')
-    except:
-        raise requests.exceptions.ConnectionError('Website is down')
+        check_url_accessibility(url=user_input)
+        if is_bitlink(token=authorization_header, url=user_input):
+                print(f'Clicks Count: {get_click_count(token=authorization_header, url=user_input)}')
+        else:
+                print(f'Shorten Link: {get_shorten_link(token=authorization_header, url=user_input)}')
+    except requests.exceptions.ConnectionError:
+        print('ConnectionError: can\'t connect to server.')
+    except requests.exceptions.HTTPError:
+        print('HTTPError: Bad request, or link format. Link format is: https://google.com')
