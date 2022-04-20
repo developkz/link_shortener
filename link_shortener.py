@@ -10,8 +10,9 @@ from dotenv import load_dotenv
 
 def check_url_accessibility(url: str) -> bool:
     '''Function checks url for avaliblity'''
-    if requests.get(url).raise_for_status:
-        return True
+    server_answer = requests.get(url)
+    return server_answer.raise_for_status()
+
 
 
 
@@ -66,3 +67,5 @@ if __name__ == '__main__':
         print('ConnectionError: can\'t connect to server.')
     except requests.exceptions.HTTPError:
         print('HTTPError: Bad request, or link format. Link format is: https://google.com')
+    except requests.exceptions.MissingSchema:
+        print(f'MissingSchema: No scheme supplied. Perhaps you meant https://{user_input}?')
