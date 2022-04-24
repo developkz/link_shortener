@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
     env_path = Path('.') / '.env'
     load_dotenv(env_path)
-    bitlink_header = os.getenv('BITLINK_TOKEN')
+    bitlink_token = os.getenv('BITLINK_TOKEN')
 
     user_input = input(f'Paste bitlink/url here: ').strip()
     authorization_header = {'Authorization': f'Bearer {bitlink_token}'}
