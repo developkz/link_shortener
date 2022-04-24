@@ -14,7 +14,7 @@ def check_url_accessibility(url: str) -> None:
     server_answer.raise_for_status()
 
 
-def is_bitlink(header: dict, url: str) -> str:
+def is_bitlink(header: dict, url: str) -> bool:
     """Returns the number of clicks on the bit-link.
     If there is no such bit-link, the bit-link will be returned."""
 
