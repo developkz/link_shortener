@@ -1,3 +1,4 @@
+import argparse
 import os
 
 from pathlib import Path
@@ -51,16 +52,20 @@ if __name__ == '__main__':
 
     env_path = Path('.') / '.env'
     load_dotenv(env_path)
-    bitlink_token = os.getenv('BITLINK_TOKEN')
+    bit_link_token = os.getenv('BITLINK_TOKEN')
+    authorization_header = {'Authorization': f'Bearer {bit_link_token}'}
 
-    user_input = input(f'Paste bitlink/url here: ').strip()
-    authorization_header = {'Authorization': f'Bearer {bitlink_token}'}
+    parser = argparse.ArgumentParser(description='The script receives a short link through the Bit-ly API. And also get\
+                                                  the number of clicks for links created by the user earlier.')
+    parser.add_argument('url', type=str, help='Your url here')
+    args = parser.parse_args()
+
     try:
-        check_url_accessibility(url=user_input)
-        if is_bitlink(header=authorization_header, url=user_input):
-            print(f'Clicks Count: {get_click_count(header=authorization_header, url=user_input)}')
+        check_url_accessibility(url=args.url)
+        if is_bitlink(header=authorization_header, url=args.url):
+            print(f'Clicks Count: {get_click_count(header=authorization_header, url=args.url)}')
         else:
-            print(f'Shorten Link: {get_shorten_link(header=authorization_header, url=user_input)}')
+            print(f'Shorten Link: {get_shorten_link(header=authorization_header, url=args.url)}')
     except requests.exceptions.ConnectionError:
         print('ConnectionError: can\'t connect to server.')
     except requests.exceptions.HTTPError:
