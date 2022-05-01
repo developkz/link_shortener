@@ -28,6 +28,12 @@ To activate environment run command:
 source env/bin/activate
 ```
 
+To install needed packages run command:
+
+```shell
+pip install -r requirements.txt
+```
+
 ## Documentation
 
 Run script. 

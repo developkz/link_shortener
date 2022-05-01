@@ -20,7 +20,7 @@ def is_bitlink(header: dict, url: str) -> bool:
 
 
 def get_click_count(header: dict, url: str) -> int:
-    """Returns click count all time for bitlink"""
+    """Returns click count all time for bit-link"""
 
     api_link = 'https://api-ssl.bitly.com/v4/bitlinks/{}/clicks/summary'
     request_link = api_link.format(urlparse(url).netloc + urlparse(url).path)
@@ -64,4 +64,4 @@ if __name__ == '__main__':
     except requests.exceptions.HTTPError:
         print('HTTPError: Bad request, or link format. Link format is: https://google.com')
     except requests.exceptions.MissingSchema:
-        print(f'MissingSchema: No scheme supplied. Perhaps you meant https://{user_input}?')
+        print(f'MissingSchema: No scheme supplied. Perhaps you meant https://{args.url}?')
