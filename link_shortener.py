@@ -9,12 +9,6 @@ import requests
 from dotenv import load_dotenv
 
 
-def check_url_accessibility(url: str) -> None:
-    """Checks url for availability"""
-    server_answer = requests.get(url)
-    server_answer.raise_for_status()
-
-
 def is_bitlink(header: dict, url: str) -> bool:
     """Returns the number of clicks on the bit-link.
     If there is no such bit-link, the bit-link will be returned."""
@@ -36,7 +30,7 @@ def get_click_count(header: dict, url: str) -> int:
 
 
 def get_shorten_link(header: dict, url: str) -> str:
-    """Returns shortern link"""
+    """Returns shorten link"""
 
     data = {'long_url': url}
     bitly_response = requests.post(
@@ -61,7 +55,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     try:
-        check_url_accessibility(url=args.url)
         if is_bitlink(header=authorization_header, url=args.url):
             print(f'Clicks Count: {get_click_count(header=authorization_header, url=args.url)}')
         else:
